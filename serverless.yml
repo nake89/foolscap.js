@@ -1,0 +1,61 @@
+service: serverless-example
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
+
+  submitPost:
+    handler: handler.submitPost
+    events:
+      - http:
+          path: post
+          method: post
+          authorizer: authSubmitPost
+
+  editPost:
+    handler: handler.editPost
+    events:
+      - http:
+          path: post/{id}
+          method: put
+          request:
+            parameters:
+              paths:
+                id: true
+
+  deletePost:
+    handler: handler.deletePost
+    events:
+      - http:
+          path: post/{id}
+          method: delete
+          request:
+            parameters:
+              paths:
+                id: true
+
+  getPost:
+    handler: handler.getPost
+    events:
+      - http:
+          path: post/{id}
+          method: get
+          request:
+            parameters:
+              paths:
+                id: false
+
+  authSubmitPost:
+    handler: service/Auth.submitPost
